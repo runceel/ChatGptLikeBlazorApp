@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.5" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.32.3" />
+    <PackageReference Include="Microsoft.DeepDev.TokenizerLib" Version="1.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChatGptLikeBlazorApp.Repositories.Interfaces\ChatGptLikeBlazorApp.Repositories.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

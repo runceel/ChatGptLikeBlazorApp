@@ -1,0 +1,194 @@
+﻿@page "/"
+@using ChatGptLikeBlazorApp.Services
+@using System.Text.Json;
+@using ChatGptLikeBlazorApp.Utils;
+@using ChatGptLikeBlazorApp.Services.Interfaces;
+@using ChatGptLikeBlazorApp.Services.Interfaces.Data;
+@inject IChatService ChatService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Internal ChatGPT</PageTitle>
+
+<RadzenLayout class="page" Style="height: 100vh;">
+    <RadzenHeader>
+        <RadzenColumn Size="12">
+            <RadzenRow Orientation="Orientation.Vertical" Gap="10px" JustifyContent="JustifyContent.Center" Style="padding: 10px;">
+                <RadzenText TextStyle="TextStyle.H3">Internal ChatGPT</RadzenText>
+            </RadzenRow>
+            @if (_chats is not null)
+            {
+                <RadzenCard>
+                    <RadzenRow>
+                        <RadzenColumn Size="10">
+                            <RadzenLabel Text="Chat GPT への指示" />
+                            <RadzenTextBox Style="width: 100%;" @bind-Value="_systemPrompt" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
+                            <RadzenButton Click="SetSystemPrompt" Text="設定" Style="width: 100%; margin-top: auto; white-space: nowrap;" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
+                            <RadzenButton Click="ResetSystemPrompt" Text="リセット" Style="width: 100%; margin-top: auto; white-space: nowrap;" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenCard>
+            }
+        </RadzenColumn>
+    </RadzenHeader>
+    <RadzenBody Style="height: auto; overflow-y: scroll;" id="scrollhost">
+        @if (_chats is not null)
+        {
+            <RadzenStack Gap="10px" Orientation="Orientation.Vertical" AlignItems="AlignItems.Stretch">
+                <RadzenRow>
+                    <RadzenColumn Size="12">
+                        @foreach (var message in _chats.ChatThread.ChatMessages)
+                        {
+                            var isUser = message.Role == ChatRole.User;
+                            <RadzenCard>
+                                <RadzenRow>
+                                    <RadzenStack Orientation="Orientation.Horizontal">
+                                        @if (isUser)
+                                        {
+                                            <RadzenIcon Icon="face" />
+                                        }
+                                        else
+                                        {
+                                            <RadzenIcon Icon="smart_toy" />
+                                        }
+                                        <RadzenText>
+                                            @((MarkupString)MarkdownConverter.ToHtml(message.Message))
+                                        </RadzenText>
+                                    </RadzenStack>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.End">
+                                    <RadzenColumn Size="12">
+                                        <RadzenText>@message.CreatedAt</RadzenText>
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </RadzenCard>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(_systemMessage))
+                        {
+                            <RadzenCard>
+                                <RadzenRow>
+                                    <RadzenStack Orientation="Orientation.Horizontal">
+                                        <RadzenIcon Icon="smart_toy" />
+                                        <RadzenText>@_systemMessage</RadzenText>
+                                    </RadzenStack>
+                                </RadzenRow>
+                            </RadzenCard>
+                        }
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenStack>
+        }
+        else
+        {
+            @if (!string.IsNullOrWhiteSpace(_systemMessage))
+            {
+                <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                    @_systemMessage
+                </RadzenAlert>
+            }
+        }
+    </RadzenBody>
+    <RadzenFooter>
+        @if (_chats is not null)
+        {
+            <EditForm OnSubmit="SendMessageAsync" Model="_chats">
+                <RadzenRow>
+                    <RadzenColumn Size="10">
+                        <RadzenTextBox @bind-Value="_messageText" Placeholder="メッセージを入力してください" Style="width: 100%;" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="1">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="送信" Style="width: 100%; white-space: nowrap;" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="1">
+                        <RadzenButton Click="ResetChatsAsync" Text="リセット" Style="width: 100%; white-space: nowrap;" />
+                    </RadzenColumn>
+                </RadzenRow>
+            </EditForm>
+        }
+    </RadzenFooter>
+</RadzenLayout>
+
+
+@code {
+    private string _systemMessage = "読み込み中…";
+    private string _messageText = "";
+    private Chats? _chats;
+    private bool _needScrollToBottom;
+    private string _systemPrompt = "";
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationState;
+        var ownerInfo = state.User.ToOwnerInfo();
+        if (ownerInfo is null)
+        {
+            _systemMessage = "ログイン情報が正しくありません。";
+            return;
+        }
+
+        _chats = await ChatService.GetOrCreateChatForUserAsync(ownerInfo);
+        _systemPrompt = _chats.ChatThread.SystemMessage.Message;
+        _systemMessage = "";
+        RequestScrollToBottom();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_needScrollToBottom)
+        {
+            _needScrollToBottom = false;
+            await JSRuntime.InvokeVoidAsync("scrollToBottom");
+        }
+    }
+
+    private void SetSystemPrompt()
+    {
+        _ = _chats ?? throw new InvalidOperationException();
+
+        _chats.ChatThread.SystemMessage.Message = _systemPrompt;
+    }
+
+    private void ResetSystemPrompt()
+    {
+        _ = _chats ?? throw new InvalidOperationException();
+
+        _systemPrompt = _chats.ChatThread.SystemMessage.Message;
+    }
+
+    private async Task ResetChatsAsync()
+    {
+        _ = _chats ?? throw new InvalidOperationException();
+
+        _systemMessage = "リセット中";
+        await ChatService.ResetChatsAsync(_chats);
+        _systemMessage = "";
+    }
+
+    private async Task SendMessageAsync()
+    {
+        _ = _chats ?? throw new InvalidOperationException();
+
+        _systemMessage = "考え中";
+
+        var newMessage = new ChatMessage
+            {
+                Role = ChatRole.User,
+                Message = _messageText,
+            };
+        _messageText = "";
+        _chats.ChatThread.AddChatMessage(newMessage);
+        RequestScrollToBottom();
+        await ChatService.AskToAgentAsync(_chats);
+        _systemMessage = "";
+        RequestScrollToBottom();
+    }
+
+    private void RequestScrollToBottom() => _needScrollToBottom = true;
+}

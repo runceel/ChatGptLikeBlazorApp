@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33620.401
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatGptLikeBlazorApp", "ChatGptLikeBlazorApp\ChatGptLikeBlazorApp.csproj", "{6745B4AA-EA52-40E5-B046-E6F5BB822E78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGptLikeBlazorApp.Services.Interfaces", "ChatGptLikeBlazorApp.Services.Interfaces\ChatGptLikeBlazorApp.Services.Interfaces.csproj", "{E5C27572-14CF-43CA-BB54-4E4D088FADA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGptLikeBlazorApp.Services", "ChatGptLikeBlazorApp.Services\ChatGptLikeBlazorApp.Services.csproj", "{1AECCA8B-D4DE-46D1-8896-57EDA3BEDD52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGptLikeBlazorApp.Core", "ChatGptLikeBlazorApp.Core\ChatGptLikeBlazorApp.Core.csproj", "{EDDD7724-0F89-443D-942C-BD076AE49214}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGptLikeBlazorApp.Repositories", "ChatGptLikeBlazorApp.Repositories\ChatGptLikeBlazorApp.Repositories.csproj", "{DE308FAE-9DD5-42D3-B202-54A3B1A95F73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatGptLikeBlazorApp.Repositories.Interfaces", "ChatGptLikeBlazorApp.Repositories.Interfaces\ChatGptLikeBlazorApp.Repositories.Interfaces.csproj", "{125855BC-A82E-48BF-8A1D-6C1A8AF5AAEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6745B4AA-EA52-40E5-B046-E6F5BB822E78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6745B4AA-EA52-40E5-B046-E6F5BB822E78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6745B4AA-EA52-40E5-B046-E6F5BB822E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6745B4AA-EA52-40E5-B046-E6F5BB822E78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5C27572-14CF-43CA-BB54-4E4D088FADA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5C27572-14CF-43CA-BB54-4E4D088FADA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5C27572-14CF-43CA-BB54-4E4D088FADA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5C27572-14CF-43CA-BB54-4E4D088FADA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AECCA8B-D4DE-46D1-8896-57EDA3BEDD52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AECCA8B-D4DE-46D1-8896-57EDA3BEDD52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AECCA8B-D4DE-46D1-8896-57EDA3BEDD52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AECCA8B-D4DE-46D1-8896-57EDA3BEDD52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDDD7724-0F89-443D-942C-BD076AE49214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDDD7724-0F89-443D-942C-BD076AE49214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDDD7724-0F89-443D-942C-BD076AE49214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDDD7724-0F89-443D-942C-BD076AE49214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE308FAE-9DD5-42D3-B202-54A3B1A95F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE308FAE-9DD5-42D3-B202-54A3B1A95F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE308FAE-9DD5-42D3-B202-54A3B1A95F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE308FAE-9DD5-42D3-B202-54A3B1A95F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{125855BC-A82E-48BF-8A1D-6C1A8AF5AAEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{125855BC-A82E-48BF-8A1D-6C1A8AF5AAEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{125855BC-A82E-48BF-8A1D-6C1A8AF5AAEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{125855BC-A82E-48BF-8A1D-6C1A8AF5AAEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8BDC657-48FB-4588-ACFE-D8C20245AFDC}
+	EndGlobalSection
+EndGlobal

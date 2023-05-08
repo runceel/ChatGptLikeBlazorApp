@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Microsoft.Extensions.Options;
+@using Microsoft.Identity.Web;
+@inject NavigationManager NavigationManager
+@inject ProtectedSessionStorage ProtectedSessionStore
+@code {
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo($"MicrosoftIdentity/Account/SignIn", forceLoad: true);
+    }
+}
