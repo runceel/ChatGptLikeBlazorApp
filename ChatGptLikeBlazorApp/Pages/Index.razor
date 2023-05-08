@@ -4,9 +4,11 @@
 @using ChatGptLikeBlazorApp.Utils;
 @using ChatGptLikeBlazorApp.Services.Interfaces;
 @using ChatGptLikeBlazorApp.Services.Interfaces.Data;
+@using System.Diagnostics.CodeAnalysis;
 @inject IChatService ChatService
 @inject IJSRuntime JSRuntime
 @inject ILogger<Index> Logger
+@inject DialogService DialogService
 
 <PageTitle>Internal ChatGPT</PageTitle>
 
@@ -25,10 +27,10 @@
                             <RadzenTextBox Style="width: 100%;" @bind-Value="_systemPrompt" />
                         </RadzenColumn>
                         <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
-                            <RadzenButton Click="SetSystemPrompt" Text="設定" Style="width: 100%; margin-top: auto; white-space: nowrap;" />
+                            <RadzenButton Click="SetSystemPrompt" Text="設定" Style="width: 100%; margin-top: auto; white-space: nowrap;" Disabled=@_processScope.IsRunning />
                         </RadzenColumn>
                         <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
-                            <RadzenButton Click="ResetSystemPrompt" Text="リセット" Style="width: 100%; margin-top: auto; white-space: nowrap;" />
+                            <RadzenButton Click="ResetChatsAsync" Text="リセット" Style="width: 100%; margin-top: auto; white-space: nowrap;" Disabled=@_processScope.IsRunning />
                         </RadzenColumn>
                     </RadzenRow>
                 </RadzenCard>
@@ -97,14 +99,11 @@
         {
             <EditForm OnSubmit="SendMessageAsync" Model="_chats">
                 <RadzenRow>
-                    <RadzenColumn Size="10">
+                    <RadzenColumn Size="11">
                         <RadzenTextBox @bind-Value="_messageText" Placeholder="メッセージを入力してください" Style="width: 100%;" />
                     </RadzenColumn>
                     <RadzenColumn Size="1">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="送信" Style="width: 100%; white-space: nowrap;" />
-                    </RadzenColumn>
-                    <RadzenColumn Size="1">
-                        <RadzenButton Click="ResetChatsAsync" Text="リセット" Style="width: 100%; white-space: nowrap;" />
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="送信" Style="width: 100%; white-space: nowrap;" Disabled=@_processScope.IsRunning />
                     </RadzenColumn>
                 </RadzenRow>
             </EditForm>
@@ -114,6 +113,7 @@
 
 
 @code {
+    private readonly ProcessScope _processScope = new();
     private string _systemMessage = "読み込み中…";
     private string _messageText = "";
     private Chats? _chats;
@@ -126,6 +126,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        using var _ = _processScope.Start();
         var state = await AuthenticationState;
         var ownerInfo = state.User.ToOwnerInfo();
         if (ownerInfo is null)
@@ -155,31 +156,39 @@
 
     private void SetSystemPrompt()
     {
-        _ = _chats ?? throw new InvalidOperationException();
+        VerifyChats();
+        using var _ = _processScope.Start();
 
         _chats.ChatThread.SystemMessage.Message = _systemPrompt;
     }
 
-    private void ResetSystemPrompt()
+    [MemberNotNull(nameof(_chats))]
+    private void VerifyChats()
     {
         _ = _chats ?? throw new InvalidOperationException();
-
-        _systemPrompt = _chats.ChatThread.SystemMessage.Message;
     }
 
     private async Task ResetChatsAsync()
     {
-        _ = _chats ?? throw new InvalidOperationException();
+        VerifyChats();
+        using var _ = _processScope.Start();
+
+        if (await DialogService.Confirm("チャットの履歴とシステムプロンプトを初期状態に戻しますか？") != true)
+        {
+            return;
+        }
 
         _systemMessage = "リセット中";
         await ChatService.ResetChatsAsync(_chats);
+        _systemPrompt = _chats.ChatThread.SystemMessage.Message;
         _systemMessage = "";
     }
 
     private async Task SendMessageAsync()
     {
-        _ = _chats ?? throw new InvalidOperationException();
+        VerifyChats();
         if (string.IsNullOrWhiteSpace(_messageText)) return;
+        using var _ = _processScope.Start();
 
         _systemMessage = "考え中";
 
