@@ -130,6 +130,10 @@
         if (ownerInfo is null)
         {
             _systemMessage = "ログイン情報が正しくありません。";
+            foreach (var claim in state.User.Claims)
+            {
+                _systemMessage += $" [{claim.Type}: {claim.Value}] ";
+            }
             return;
         }
 
