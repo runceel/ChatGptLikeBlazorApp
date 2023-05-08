@@ -188,7 +188,9 @@
                 Role = ChatRole.User,
                 Message = _messageText,
             };
+
         _messageText = "";
+        SetSystemPrompt();
         _chats.ChatThread.AddChatMessage(newMessage);
         RequestScrollToBottom();
         try
