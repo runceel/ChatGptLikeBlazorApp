@@ -14,7 +14,7 @@
 Please add the fllowing settings to application settings of App Service.
 - `OpenAI__Endpoint`: the endpoint of Azure OpenAI Service.
 - `CosmosDb__ConnectionString`: the connection string of CosmosDB.
-- `OpenAIAssistantClientOptions`: the model deploy name of Azure OpenAI Service.
+- `OpenAIAssistantClientOptions__ModelDeployName`: the model deploy name of Azure OpenAI Service.
 - `ChatServiceOptions__DefaultSystemPrompt`: The default system prompt for the chat.
 
 3. Configure App Service authentication with an AzureAD single-tenant app.
