@@ -1,15 +1,14 @@
-name: .NET Core アプリケーションを構築して Web アプリ kaota-chatgptlikeblazor にデプロイする
+name: .NET Core アプリケーションを構築して Web アプリ kaota-chatgptlike にデプロイする
 on:
   push:
     branches:
     - main
 env:
-  AZURE_WEBAPP_NAME: kaota-chatgptlikeblazor
+  AZURE_WEBAPP_NAME: kaota-chatgptlike
   AZURE_WEBAPP_PACKAGE_PATH: ChatGptLikeBlazorApp\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 7.0.x
   WORKING_DIRECTORY: ChatGptLikeBlazorApp
-  AZURE_WEBAPP_SLOT_NAME: staging
 jobs:
   build:
     runs-on: windows-latest
@@ -45,6 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.kaota_chatgptlikeblazor_staging_3A61 }}
+        publish-profile: ${{ secrets.kaota_chatgptlike_FC7F }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name: ${{ env.AZURE_WEBAPP_SLOT_NAME }}
