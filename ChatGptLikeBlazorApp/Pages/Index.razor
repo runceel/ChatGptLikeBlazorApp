@@ -21,18 +21,24 @@
             @if (_chats is not null)
             {
                 <RadzenCard>
-                    <RadzenRow>
-                        <RadzenColumn Size="10">
-                            <RadzenLabel Text="Chat GPT への指示" />
-                            <RadzenTextBox Style="width: 100%;" @bind-Value="_systemPrompt" />
-                        </RadzenColumn>
-                        <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
-                            <RadzenButton Click="SetSystemPrompt" Text="設定" Style="width: 100%; margin-top: auto; white-space: nowrap;" Disabled=@_processScope.IsRunning />
-                        </RadzenColumn>
-                        <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
-                            <RadzenButton Click="ResetChatsAsync" Text="リセット" Style="width: 100%; margin-top: auto; white-space: nowrap;" Disabled=@_processScope.IsRunning />
-                        </RadzenColumn>
-                    </RadzenRow>
+                    <RadzenAccordion>
+                        <Items>
+                            <RadzenAccordionItem Text="オプション" Icon="account_balance_wallet">
+                                <RadzenRow>
+                                    <RadzenColumn Size="10">
+                                        <RadzenLabel Text="Chat GPT への指示" />
+                                        <RadzenTextArea Style="width: 100%;" @bind-Value="_systemPrompt" />
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
+                                        <RadzenButton Click="SetSystemPrompt" Text="保存" Style="width: 100%; margin-top: auto; white-space: nowrap;" Disabled=@_processScope.IsRunning />
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="1" Style="display: flex; flex-direction: column;">
+                                        <RadzenButton Click="ResetChatsAsync" Text="リセット" Style="width: 100%; margin-top: auto; white-space: nowrap;" Disabled=@_processScope.IsRunning />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </RadzenAccordionItem>
+                        </Items>
+                    </RadzenAccordion>
                 </RadzenCard>
             }
         </RadzenColumn>
@@ -101,7 +107,7 @@
             <EditForm OnSubmit="SendMessageAsync" Model="_chats">
                 <RadzenRow>
                     <RadzenColumn Size="11">
-                        <RadzenTextBox @bind-Value="_messageText" Placeholder="メッセージを入力してください" Style="width: 100%;" />
+                        <RadzenTextArea @bind-Value="_messageText" Placeholder="メッセージを入力してください" Style="width: 100%;" />
                     </RadzenColumn>
                     <RadzenColumn Size="1">
                         <RadzenButton ButtonType="ButtonType.Submit" Text="送信" Style="width: 100%; white-space: nowrap;" Disabled=@_processScope.IsRunning />
