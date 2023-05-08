@@ -189,6 +189,8 @@
     {
         VerifyChats();
         if (string.IsNullOrWhiteSpace(_messageText)) return;
+        if (_processScope.IsRunning) return;
+
         using var _ = _processScope.Start();
 
         _systemMessage = "考え中";
