@@ -6,6 +6,7 @@
 @using ChatGptLikeBlazorApp.Services.Interfaces.Data;
 @inject IChatService ChatService
 @inject IJSRuntime JSRuntime
+@inject ILogger<Index> Logger
 
 <PageTitle>Internal ChatGPT</PageTitle>
 
@@ -190,8 +191,18 @@
         _messageText = "";
         _chats.ChatThread.AddChatMessage(newMessage);
         RequestScrollToBottom();
-        await ChatService.AskToAgentAsync(_chats);
-        _systemMessage = "";
+        try
+        {
+            await ChatService.AskToAgentAsync(_chats);
+            _systemMessage = "";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "{inputMessage} の回答生成中にエラーが発生しました。", newMessage.Message);
+            _systemMessage = "すいません。エラーが発生しました。少し待って再送信してください。";
+            _messageText = newMessage.Message;
+        }
+
         RequestScrollToBottom();
     }
 
