@@ -178,6 +178,7 @@
     private async Task SendMessageAsync()
     {
         _ = _chats ?? throw new InvalidOperationException();
+        if (string.IsNullOrWhiteSpace(_messageText)) return;
 
         _systemMessage = "考え中";
 
